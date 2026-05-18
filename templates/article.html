@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ lab.title }} - Jenkins</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/github.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='20260509') }}">
+</head>
+<body class="jenkins-page dashboard-page">
+    <header class="jenkins-header">
+        <div class="jenkins-brand">
+            <span class="jenkins-logo-text">Jenkins</span>
+        </div>
+        <div class="jenkins-header-actions">
+            <span class="header-icon header-icon-search" aria-hidden="true">⌕</span>
+            <span class="header-icon header-icon-settings" aria-hidden="true">⚙</span>
+            <span class="header-icon header-icon-user" aria-hidden="true">◔</span>
+        </div>
+    </header>
+
+    <main class="dashboard-layout dashboard-layout-article">
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-nav">
+                <a class="sidebar-link" href="{{ url_for('home') }}">New Item</a>
+                <a class="sidebar-link" href="{{ url_for('home') }}">Build History</a>
+            </div>
+
+            <section class="sidebar-card">
+                <div class="sidebar-card-head">
+                    <h2>Build Queue</h2>
+                    <span>⌄</span>
+                </div>
+                <p class="sidebar-card-copy">No builds in the queue.</p>
+            </section>
+
+            <section class="sidebar-card">
+                <div class="sidebar-card-head">
+                    <h2>Build Executor Status</h2>
+                    <span>0/2</span>
+                </div>
+            </section>
+        </aside>
+
+        <section class="dashboard-content dashboard-content-article">
+            <div class="content-toolbar">
+                <div class="tab-pills">
+                    <span class="tab-pill active">All</span>
+                    <span class="tab-pill plus">+</span>
+                </div>
+                <a class="description-button" href="{{ url_for('home') }}">Back to dashboard</a>
+            </div>
+
+            <section class="markdown-section">
+                <div class="markdown-head">
+                    <h2>{{ lab.title }}</h2>
+                    <span>{{ lab.file_name }}</span>
+                </div>
+                <article class="markdown-body">
+                    {{ lab.html | safe }}
+                </article>
+            </section>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js"></script>
+    <script>
+        hljs.highlightAll();
+
+        document.querySelectorAll('pre').forEach(pre => {
+            const codeBlock = pre.querySelector('code');
+            if (codeBlock) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'code-block-wrapper';
+
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-icon-btn';
+                copyBtn.title = 'Copy to clipboard';
+                copyBtn.innerHTML = '<svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg><svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+
+                copyBtn.addEventListener('click', () => {
+                    const text = codeBlock.textContent;
+                    navigator.clipboard.writeText(text).then(() => {
+                        copyBtn.classList.add('copied');
+                        setTimeout(() => {
+                            copyBtn.classList.remove('copied');
+                        }, 2000);
+                    }).catch(() => {
+                        const textarea = document.createElement('textarea');
+                        textarea.value = text;
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textarea);
+                        copyBtn.classList.add('copied');
+                        setTimeout(() => {
+                            copyBtn.classList.remove('copied');
+                        }, 2000);
+                    });
+                });
+
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(copyBtn);
+                wrapper.appendChild(pre);
+            }
+        });
+    </script>
+</body>
+</html>

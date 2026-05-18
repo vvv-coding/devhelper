@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jenkins</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='20260509') }}">
+</head>
+<body class="jenkins-page dashboard-page">
+    <header class="jenkins-header">
+        <div class="jenkins-brand">
+            <span class="jenkins-logo-text">Jenkins</span>
+        </div>
+        <div class="jenkins-header-actions">
+            <span class="header-icon header-icon-search" aria-hidden="true">⌕</span>
+            <span class="header-icon header-icon-settings" aria-hidden="true">⚙</span>
+            <span class="header-icon header-icon-user" aria-hidden="true">◔</span>
+        </div>
+    </header>
+
+    <main class="dashboard-layout">
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-nav">
+                <a class="sidebar-link" href="#">New Item</a>
+                <a class="sidebar-link" href="#">Build History</a>
+            </div>
+
+            <section class="sidebar-card">
+                <div class="sidebar-card-head">
+                    <h2>Build Queue</h2>
+                </div>
+                <p class="sidebar-card-copy">No builds in the queue.</p>
+            </section>
+
+            <section class="sidebar-card">
+                <div class="sidebar-card-head">
+                    <h2>Build Executor Status</h2>
+                    <span>0/2</span>
+                </div>
+            </section>
+        </aside>
+
+        <section class="dashboard-content">
+            <div class="content-toolbar">
+                <div class="tab-pills">
+                    <span class="tab-pill active">All</span>
+                    <span class="tab-pill plus">+</span>
+                </div>
+                <button class="description-button" type="button">Add description</button>
+            </div>
+
+            <div class="jobs-table-shell">
+                <table class="jobs-table">
+                    <thead>
+                        <tr>
+                            <th class="col-status">S</th>
+                            <th class="col-weather">W</th>
+                            <th class="col-name">Name &#8595;</th>
+                            <th>Last Success</th>
+                            <th>Last Failure</th>
+                            <th>Last Duration</th>
+                            <th class="col-play"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if labs %}
+                            {% for lab in labs %}
+                                <tr>
+                                    <td><span class="row-status success">✓</span></td>
+                                    <td><span class="row-weather">⛅</span></td>
+                                    <td class="job-name-cell"><a href="{{ url_for('lab_detail', lab_id=lab.id) }}">{{ lab.slug }}</a></td>
+                                    <td>
+                                        <span>{{ lab.modified }}</span>
+                                        <span class="build-badge">#10</span>
+                                    </td>
+                                    <td>
+                                        <span>{{ lab.modified }}</span>
+                                        <span class="build-badge">#9</span>
+                                    </td>
+                                    <td>{{ 20 + lab.step_count * 2 }} sec</td>
+                                    <td class="play-cell">▶</td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="7" class="empty-row">No jobs found in the lab folder.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="icon-size-switcher">
+                <span>Icon:</span>
+                <span>S</span>
+                <span>M</span>
+                <span class="active">L</span>
+            </div>
+
+            <div class="page-footer-links">
+                <a href="#">REST API</a>
+                <span>Jenkins 2.555.1</span>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
